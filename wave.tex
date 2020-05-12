@@ -1,0 +1,102 @@
+% Adaptado de (BAUER, WESTFALL, DIAS, 2013, p.86, Figura 3.8)
+% Adaptado de (BAUER, WESTFALL, 2014, p.466, Figure 15.8)
+\documentclass{standalone}
+\let\oldvec\vec
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepgfplotslibrary{patchplots}
+\usepackage{comment}
+\tikzset{>=latex} % for LaTeX arrow head
+\usepackage{xcolor}
+
+\pgfplotsset{colormap={wave}{rgb255=(145,85,61) rgb255=(229,200,168) rgb255=(255,240,225) rgb255=(229,200,168) rgb255=(145,85,61)}}
+
+\definecolor{length}{rgb}{0 , 0.5 , 0}
+\definecolor{time}{rgb}{0 , 0 , 1}
+
+\usetikzlibrary{arrows}
+
+\begin{document}
+
+\begin{tikzpicture}
+\begin{axis}[
+    view={-45}{30},
+    width=12cm,
+    height=6cm,
+    xlabel=$x$,
+    ylabel=$t$,
+    zlabel=$z$,
+    zlabel style={rotate=-90},
+    zmin=-1,
+    zmax=1,
+    ticks=none,
+    grid=none,
+	colormap name=wave
+]
+
+% Senoide do comprimento
+\addplot3[
+	very thick,black,
+	domain=0:720,
+	domain y=0:1080,
+	samples=100,
+	samples y=0,
+] 
+    (x , 1080 , {sin(-x)});
+
+% Senoide do tempo
+\addplot3[
+	very thick,black,
+	domain=0:720,
+	domain y=0:1080,
+	samples=100,
+] 
+    (720 , y , {sin(y)});
+
+% Onda
+\addplot3[
+	surf,shader=interp,
+	domain=0:720,
+	domain y=0:1080,
+	samples=100,
+] 
+	(x , y , {sin(y - x)});
+
+% Senoide do tempo
+\addplot3[
+	very thick,time,
+	domain=0:720,
+	domain y=0:1080,
+	samples=100,
+] 
+    (0 , y , {sin(y)});
+
+% Senoide do comprimento
+\addplot3[
+	very thick,length,
+	domain=0:720,
+	domain y=0:1080,
+	samples=100,
+	samples y=0,
+] 
+    (x , 0 , {sin(-x)});
+
+% Indicação do período da onda
+\draw[time,dashed] ( 0 , 90 , -1 ) -- (0 , 90 , 1);
+\draw[time,dashed] ( 0 , 450 , -1 ) -- (0 , 450 , 1);
+\draw[time, <->] ( 0 , 90 , 0 ) -- (0 , 450 , 0);
+\draw (0 , 270 , 0) node[above]{\color{time}$\mathbf{T}$};
+
+% Indicação do comprimento da onda
+\draw[length,dashed] ( 270 , 0 , -1 ) -- ( 270 , 0 , 1);
+\draw[length,dashed] ( 630 , 0 , -1 ) -- ( 630 , 0 , 1);
+\draw[length, <->] ( 270 , 0 , 0 ) -- (630 , 0 , 0);
+\draw (450 , 0 , 0) node[above]{\color{length}$\pmb{\lambda}$};
+
+\end{axis}
+
+\end{tikzpicture}
+
+\end{document}
